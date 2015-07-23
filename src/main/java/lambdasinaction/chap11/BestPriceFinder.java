@@ -17,13 +17,10 @@ public class BestPriceFinder {
                                                    new Shop("BuyItAll"),
                                                    new Shop("ShopEasy"));
 
-    private final Executor executor = Executors.newFixedThreadPool(shops.size(), new ThreadFactory() {
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(r);
-            t.setDaemon(true);
-            return t;
-        }
+    private final Executor executor = Executors.newFixedThreadPool(shops.size(), r -> {
+        Thread t = new Thread(r);
+        t.setDaemon(true);
+        return t;
     });
 
     public List<String> findPricesSequential(String product) {
@@ -62,7 +59,7 @@ public class BestPriceFinder {
         long start = System.nanoTime();
         CompletableFuture[] futures = findPricesStream(product)
                 .map(f -> f.thenAccept(s -> System.out.println(s + " (done in " + ((System.nanoTime() - start) / 1_000_000) + " msecs)")))
-                .toArray(size -> new CompletableFuture[size]);
+                .toArray(CompletableFuture[]::new);
         CompletableFuture.allOf(futures).join();
         System.out.println("All shops have now responded in " + ((System.nanoTime() - start) / 1_000_000) + " msecs");
     }

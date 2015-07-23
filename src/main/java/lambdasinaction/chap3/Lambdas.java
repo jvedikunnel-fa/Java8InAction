@@ -1,6 +1,7 @@
 package lambdasinaction.chap3;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Lambdas {
 	public static void main(String ...args){
@@ -25,13 +26,7 @@ public class Lambdas {
 	}
 
 	public static List<Apple> filter(List<Apple> inventory, ApplePredicate p){
-		List<Apple> result = new ArrayList<>();
-		for(Apple apple : inventory){
-			if(p.test(apple)){
-				result.add(apple);
-			}
-		}
-		return result;
+		return inventory.stream().filter(p::test).collect(Collectors.toList());
 	}   
 
 	public static class Apple {

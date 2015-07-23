@@ -19,6 +19,11 @@ public class StreamBasic {
         // Java 8
         getLowCaloricDishesNamesInJava8(Dish.menu).forEach(System.out::println);
 
+        System.out.println("---");
+
+        // Java 8 parallel
+        getLowCaloricDishesNamesInJava8Parallel(Dish.menu).forEach(System.out::println);
+
     }
 
     public static List<String> getLowCaloricDishesNamesInJava7(List<Dish> dishes){
@@ -45,6 +50,15 @@ public class StreamBasic {
                 .filter(d -> d.getCalories() > 400)
                 .sorted(comparing(Dish::getCalories))
                 .map(Dish::getName)
+                .collect(toList());
+    }
+
+    public static List<String> getLowCaloricDishesNamesInJava8Parallel(List<Dish> dishes){
+        return dishes.stream()
+                .filter(d -> d.getCalories() > 400)
+                .sorted(comparing(Dish::getCalories))
+                .map(Dish::getName)
+                .parallel()
                 .collect(toList());
     }
 }
